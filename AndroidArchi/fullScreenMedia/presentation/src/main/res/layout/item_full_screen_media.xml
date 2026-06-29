@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 페이지(스와이프 단위)는 이미지만 포함한다. 뒤로가기/타이틀/하트는 Fragment 오버레이가 관리한다. -->
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mediaImage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:contentDescription="@null"
+    android:scaleType="fitCenter" />

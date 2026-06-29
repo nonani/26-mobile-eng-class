@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <!-- 스와이프되는 영역은 이미지 페이저뿐이다. 아래 오버레이들은 페이저 위에 고정된다. -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/mediaPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/loadingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@android:color/black"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/emptyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/media_empty"
+        android:textColor="@android:color/black"
+        android:visibility="gone" />
+
+    <!-- 상단 타이틀: 백버튼과 하트버튼 사이 중앙에 위치한다. 페이지 전환 시 Fragment 가 현재 페이지 데이터로 갱신한다. -->
+    <FrameLayout
+        android:id="@+id/titleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textFontWeight="500"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <!-- 하트: 페이지 전환 시 현재 페이지의 즐겨찾기 상태로 갱신된다. -->
+    <ImageView
+        android:id="@+id/favoriteButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:contentDescription="@null"
+        android:focusable="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/outlined_favorite_24dp"
+        android:tint="#FFFF0000" />
+
+    <FrameLayout
+        android:id="@+id/backButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|start"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/nav_back_button"
+            android:src="@drawable/arrow_back_24px"
+            android:tint="@android:color/black" />
+    </FrameLayout>
+
+    <!-- 하트 추가/삭제 시 화면 중앙에서 한 번 재생되는 Lottie 오버레이. -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/heartAnimation"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false" />
+</FrameLayout>
