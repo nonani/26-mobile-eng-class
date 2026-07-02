@@ -68,7 +68,8 @@ Follow `make-new-feature-module` exactly (conflict check → 4 modules → setti
 
 1. `gradle-build-check` skill — fix until green.
 2. If domain logic was added (UseCase beyond pass-through), add the unit test per `make-new-feature-module` §test and run `run-android-tests`.
-3. Optional visual check when an emulator is available: `./gradlew :app:installDebug`, then deep-link straight into the screen:
+3. Ask the `architecture-guardian` subagent to review changed Kotlin/Gradle files. Fix HIGH/MEDIUM findings, then rerun `gradle-build-check`.
+4. Optional visual check when an emulator is available: `./gradlew :app:installDebug`, then deep-link straight into the screen:
    `adb shell 'am start -W -a android.intent.action.VIEW -d "https://www.androidarchi.com/<featurePath>" com.jongchan.androidarchi'`
    Screenshot (`adb exec-out screencap -p > /tmp/<feature>.png`), Read it, and compare against the design source; list visual diffs (spacing/color/typography) and fix obvious ones.
 

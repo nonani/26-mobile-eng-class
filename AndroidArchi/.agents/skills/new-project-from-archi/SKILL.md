@@ -24,11 +24,11 @@ Conflict check: destination must not exist. Never overwrite.
 rsync -a \
   --exclude 'build/' --exclude '.gradle/' --exclude '.git/' --exclude '.DS_Store' \
   --exclude '.kotlin/' --exclude 'local.properties' --exclude '.idea/' --exclude '*.iml' \
-  --exclude '.claude/worktrees/' --exclude '.codex/worktrees/' \
+  --exclude '.claude/' --exclude '.codex/worktrees/' \
   AndroidArchi/ <Dest>/
 ```
 
-Keep project agent artifacts (`AGENTS.md`, `.agents/`, `.codex/`, and `.claude/` if present) and the `gradle/` wrapper so Codex skills/config and any legacy source-agent artifacts travel with the project.
+Keep Codex project artifacts (`AGENTS.md`, `.agents/`, `.codex/`) and the `gradle/` wrapper so Codex skills/config travel with the project. Do not require legacy source-agent directories for a Codex-only project.
 
 ## 2. Rename package directories
 

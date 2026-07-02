@@ -857,7 +857,8 @@ AppRoute(
 5. `app/build.gradle.kts` 의존성 블록에 4 줄 추가 (§4) + `main/presentation/build.gradle.kts` 에 2 줄 추가 (§4.5, REQUIRED).
 6. `AppRouteRegistry.kt` 에 entry 추가 (§5).
 7. 빌드 확인 — `gradle-build-check` 스킬. 새 모듈 4개가 컴파일되고 Hilt 그래프가 깨지지 않는지.
-8. 사용자에게 보고:
+8. `architecture-guardian` subagent로 변경된 Kotlin/Gradle 파일을 리뷰한다. HIGH/MEDIUM 지적은 수정 후 `gradle-build-check`를 다시 실행한다.
+9. 사용자에게 보고:
    - 만든 파일 목록 (markdown 링크)
    - 다음 단계 안내:
      - 진짜 API 응답이 잡히면 `api-dto-code-gen-ko` 스킬로 `placeholder` DTO/VO 교체

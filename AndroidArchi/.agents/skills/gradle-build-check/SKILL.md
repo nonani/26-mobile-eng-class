@@ -33,7 +33,8 @@ description: "Verify the Android project builds and passes lint after code chang
 ### 실패 시
 1. 에러 메시지 첫 번째만 집중 (이후 에러는 cascade인 경우가 많음).
 2. 파일 경로·라인 번호를 [path:line](path:line) 형식으로 보고.
-3. 수정 후 다시 같은 명령으로 재검증. 통과할 때까지 반복.
+3. 첫 번째 에러만으로 수정 방향이 명확하지 않거나 로그가 길면 `build-fixer` subagent에 원래 실행한 Gradle 명령과 핵심 에러를 전달해 수정하게 한다.
+4. 수정 후 메인 에이전트가 다시 같은 명령으로 재검증한다. 통과할 때까지 반복.
 
 ### 린트 경고
 - Lint 리포트: `app/build/reports/lint-results-debug.html`

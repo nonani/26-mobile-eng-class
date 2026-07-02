@@ -857,7 +857,8 @@ AppRoute(
 5. Add 4 lines to `app/build.gradle.kts` deps (§4) + 2 lines to `main/presentation/build.gradle.kts` (§4.5).
 6. Add an entry to `AppRouteRegistry.kt` (§5).
 7. Build check — `gradle-build-check` skill. Confirm the 4 new modules compile and the Hilt graph isn't broken.
-8. Report to user:
+8. Ask the `architecture-guardian` subagent to review changed Kotlin/Gradle files. Fix HIGH/MEDIUM findings, then rerun `gradle-build-check`.
+9. Report to user:
    - List of created files (markdown links)
    - Next steps:
      - Once a real API response is decided, replace `placeholder` DTO/VO via `api-dto-code-gen`
