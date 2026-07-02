@@ -1,6 +1,6 @@
 ---
 name: "api-dto-code-gen-ko"
-description: "Korean-language variant of `api-dto-code-gen`. Given an example JSON API response, scaffold Response DTO (all nullable, kotlinx.serialization) + VO (defaulted) + toVO() conversion for this project's data layer, and the Retrofit ApiService / DataSource / Repository / Hilt Module that match the existing intro / common-media patterns. Use ONLY when the user explicitly asks for Korean output or invokes `/api-dto-code-gen-ko`. Default for this task is the English `api-dto-code-gen` skill (lower token cost)."
+description: "Korean-language variant of `api-dto-code-gen`. Given an example JSON API response, scaffold Response DTO (all nullable, kotlinx.serialization) + VO (defaulted) + toVO() conversion for this project's data layer, and the Retrofit ApiService / DataSource / Repository / Hilt Module that match the existing intro / common-media patterns. Use ONLY when the user explicitly asks for Korean output or invokes the `api-dto-code-gen-ko` skill. Default for this task is the English `api-dto-code-gen` skill (lower token cost)."
 ---
 
 # 예시 응답 JSON → DTO/VO/Repository 코드 생성

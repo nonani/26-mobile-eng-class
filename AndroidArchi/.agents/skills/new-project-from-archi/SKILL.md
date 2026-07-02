@@ -1,6 +1,6 @@
 ---
 name: "new-project-from-archi"
-description: "Clone the AndroidArchi template into a brand-new Android project \u2014 copy the tree, rename package/applicationId/app name/deep-link host, optionally remove reference features, then verify with a full build and a leftover-string sweep. Optionally takes a design spec (Figma link via Figma MCP, design-spec image(s), or PDF) and continues into design-token-sync + design-to-feature so the new project's theme and screens are generated straight from the design. Trigger when the user asks to \"start a new project from this template\", \"make project X from AndroidArchi\", provides a design spec (Figma/image/PDF) and asks to \"create a new project from this design\", or runs `/new-project-from-archi`."
+description: "Clone the AndroidArchi template into a brand-new Android project \u2014 copy the tree, rename package/applicationId/app name/deep-link host, optionally remove reference features, then verify with a full build and a leftover-string sweep. Optionally takes a design spec (Figma link via Figma MCP, design-spec image(s), or PDF) and continues into design-token-sync + design-to-feature so the new project's theme and screens are generated straight from the design. Trigger when the user asks to \"start a new project from this template\", \"make project X from AndroidArchi\", provides a design spec (Figma/image/PDF) and asks to \"create a new project from this design\", or invokes the `new-project-from-archi` skill."
 ---
 
 # New project from AndroidArchi template
@@ -24,11 +24,11 @@ Conflict check: destination must not exist. Never overwrite.
 rsync -a \
   --exclude 'build/' --exclude '.gradle/' --exclude '.git/' --exclude '.DS_Store' \
   --exclude '.kotlin/' --exclude 'local.properties' --exclude '.idea/' --exclude '*.iml' \
-  --exclude '.claude/worktrees/' \
+  --exclude '.claude/worktrees/' --exclude '.codex/worktrees/' \
   AndroidArchi/ <Dest>/
 ```
 
-Keep `.claude/` (skills/agents/hooks travel with the project) and `gradle/` wrapper.
+Keep project agent artifacts (`AGENTS.md`, `.agents/`, `.codex/`, and `.claude/` if present) and the `gradle/` wrapper so Codex skills/config and any legacy source-agent artifacts travel with the project.
 
 ## 2. Rename package directories
 
@@ -81,14 +81,14 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"  
 
 ## 7. Design spec → theme + screens (only when a design spec was provided)
 
-Work inside the NEW project (its `.claude/` was copied in §1, so the same skills apply there — either continue in this session using the new project's absolute paths, or tell the user to start a session at the new root). Follow docs/DESIGN_TO_CODE_GUIDE.md:
+Work inside the NEW project (its project agent artifacts were copied in §1, so the same skills/config apply there — either continue in this session using the new project's absolute paths, or tell the user to start a session at the new root). Follow docs/DESIGN_TO_CODE_GUIDE.md:
 
-1. **Tokens first** — run `design-token-sync` with the design source (Figma link / image / PDF). Review the mapping report with the user before building screens.
+1. **Tokens first** — use the `design-token-sync` skill with the design source (Figma link / image / PDF). Review the mapping report with the user before building screens.
 2. **Enumerate screens** — Figma: one frame per screen; PDF: ask which pages map to which screens; images: group them per screen. Confirm the screen list + feature names (lowerCamelCase) with the user in one batch.
-3. **Per screen** — run `design-to-feature <featureName> <frame link | image | PDF pages>`. It picks the golden-example base, scaffolds 4 modules, implements token-only Compose UI, registers the route, and build-checks.
+3. **Per screen** — use the `design-to-feature` skill with `<featureName> <frame link | image | PDF pages>`. It picks the golden-example base, scaffolds 4 modules, implements token-only Compose UI, registers the route, and build-checks.
 4. **Start destination** — if `intro` was kept only as a placeholder start destination (§0), repoint the start stack/AppRouteRegistry to the first real screen and remove `intro` per §4.
-5. **Verify** — `run-android-tests`; if an emulator is available, `verify-screen` per screen against the design source.
+5. **Verify** — use `run-android-tests`; if an emulator is available, use `verify-screen` per screen against the design source.
 
 ## 8. Report
 
-Report: what was renamed, features removed, leftover-sweep result, build/test status, and — if a design spec was given — the token mapping report, screens generated, and remaining stubs (`TODO-API-SPEC`). Otherwise point at next steps (`/design-token-sync` → `/design-to-feature` per docs/DESIGN_TO_CODE_GUIDE.md).
+Report: what was renamed, features removed, leftover-sweep result, build/test status, and — if a design spec was given — the token mapping report, screens generated, and remaining stubs (`TODO-API-SPEC`). Otherwise point at next steps (`design-token-sync` → `design-to-feature` per docs/DESIGN_TO_CODE_GUIDE.md).

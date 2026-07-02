@@ -1,6 +1,6 @@
 ---
 name: "design-token-sync"
-description: "Sync design tokens (colors / typography) from a Figma file (via Figma MCP) or a design-spec image/PDF into this project's single token file (common/presentation ui/token/DesignTokens.kt). Trigger when the user asks to \"sync tokens\", \"apply the Figma variables\", \"update the theme from the design\", provides a Figma link or design-spec image and asks to update colors/typography, or runs `/design-token-sync`."
+description: "Sync design tokens (colors / typography) from a Figma file (via Figma MCP) or a design-spec image/PDF into this project's single token file (common/presentation ui/token/DesignTokens.kt). Trigger when the user asks to \"sync tokens\", \"apply the Figma variables\", \"update the theme from the design\", provides a Figma link or design-spec image and asks to update colors/typography, or invokes the `design-token-sync` skill."
 ---
 
 # Design token sync (Figma → DesignTokens.kt)

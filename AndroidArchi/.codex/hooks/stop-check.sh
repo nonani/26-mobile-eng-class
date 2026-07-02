@@ -23,4 +23,5 @@ if [ "$active" != "True" ] && [ "$active" != "true" ] && [ -f "$marker" ]; then
   exit 2
 fi
 
+printf '{}\n'
 exit 0

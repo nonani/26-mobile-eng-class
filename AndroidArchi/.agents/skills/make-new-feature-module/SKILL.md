@@ -1,6 +1,6 @@
 ---
 name: "make-new-feature-module"
-description: "Scaffold a brand-new feature as a 4-module set (entity / domain / data / presentation) mirroring the existing :intro / :search modules \u2014 gradle files, packages, AndroidManifest, base classes (VO, ErrorType in domain, Repository, UseCase, Page navigation object, DataSource, ApiService, RepositoryImpl, DataModule, DTO, MVI Intent + UIState, ViewModel, Page composable), the settings.gradle.kts include block, the :app dependency block, and an AppRouteRegistry entry. Trigger when the user asks to \"make a new feature module\", names a new feature (e.g. \"splash\", \"search\") and wants the whole module skeleton, or runs `/make_new_feature_module` / `/make-new-feature-module`."
+description: "Scaffold a brand-new feature as a 4-module set (entity / domain / data / presentation) mirroring the existing :intro / :search modules \u2014 gradle files, packages, AndroidManifest, base classes (VO, ErrorType in domain, Repository, UseCase, Page navigation object, DataSource, ApiService, RepositoryImpl, DataModule, DTO, MVI Intent + UIState, ViewModel, Page composable), the settings.gradle.kts include block, the :app dependency block, and an AppRouteRegistry entry. Trigger when the user asks to \"make a new feature module\", names a new feature (e.g. \"splash\", \"search\") and wants the whole module skeleton, or asks to run `make_new_feature_module` / `make-new-feature-module`; use this skill for that request."
 ---
 
 # New feature module scaffolding (intro / search pattern)
@@ -80,7 +80,7 @@ Under `<featureLower>/`. Class prefix uses `FeatureUpper`. Default case (remote 
             └── <FeatureUpper>Page.kt          # contains data class <FeatureUpper>UIState
 ```
 
-> Stateful screens (search / favorite / fullScreenMedia) are MVI: state changes go through `dispatch(ReducerEvent) → reduce()`, never `uiState.update {}` directly (CLAUDE.md rule 3). They ship a `<FeatureUpper>ReducerEvent.kt`. `intro` is the minimal non-MVI exception (plain `ViewModel`, empty Composable stub) — omit the ReducerEvent file for that simplest-screen case only.
+> Stateful screens (search / favorite / fullScreenMedia) are MVI: state changes go through `dispatch(ReducerEvent) → reduce()`, never `uiState.update {}` directly (AGENTS.md rule 3). They ship a `<FeatureUpper>ReducerEvent.kt`. `intro` is the minimal non-MVI exception (plain `ViewModel`, empty Composable stub) — omit the ReducerEvent file for that simplest-screen case only.
 
 > AndroidManifest is an empty `<manifest>` placeholder. Only data/presentation need it (entity/domain are kotlin-jvm modules).
 
@@ -401,7 +401,7 @@ object <FeatureUpper>Page {
 }
 ```
 
-> **Three-way name match (silent-failure trap):** the template segment `{<paramName>}`, the constant `KEY_<PARAM_UPPER> = "<paramName>"`, and the `Args.from` lookup key must be the same string. Mismatch → the deep-link value is dropped with no error. See `navigation-conventions` rules 2–3.
+> **Three-way name match (silent-failure trap):** the template segment `{<paramName>}`, the constant `KEY_<PARAM_UPPER> = "<paramName>"`, and the `Args.from` lookup key must be the same string. Mismatch → the deep-link value is dropped with no error. See `navigation-conventions` Golden rules 2–3 in `.agents/skills/navigation-conventions/SKILL.md`.
 >
 > Why `PATH` holds `{<paramName>}` literally: that template string is the back-stack key identity (`GenericNavKey.path`), the O(1) render-dispatch key (`appRouteByPath[path]`), and the deep-link URL template — all one value. The concrete `123` lives only in `args`, so serialization/process-death restore stays safe and `RoutePattern` can extract it. A route whose `PATH` contains `{` is auto-added to `appRoutePatterns` — deep links match it for free.
 
@@ -652,7 +652,7 @@ private fun <FeatureUpper>PageContent(uiState: <FeatureUpper>UIState) {
 
 ### 2.18 `presentation/.../<FeatureUpper>ViewModel.kt`
 
-Stateful (MVI) — extends `MviViewModel`, routes every state change through `dispatch(ReducerEvent) → reduce()` (CLAUDE.md rule 3; the `search` / `favorite` / `fullScreenMedia` pattern). Never call `uiState.update {}` directly.
+Stateful (MVI) — extends `MviViewModel`, routes every state change through `dispatch(ReducerEvent) → reduce()` (AGENTS.md rule 3; the `search` / `favorite` / `fullScreenMedia` pattern). Never call `uiState.update {}` directly.
 
 ```kotlin
 package com.jongchan.androidarchi.<featureLower>.presentation
@@ -870,11 +870,11 @@ Scaffolding-step-only items:
 
 - Don't modify existing modules (`intro`, `search`, `favorite`, `fullScreenMedia`, `main`, `common`) — only **add** to `settings.gradle.kts` / `app/build.gradle.kts` / `main/presentation/build.gradle.kts` / `AppRouteRegistry.kt`.
 - Don't put `<FeatureUpper>Page` (Navigation definition) in `presentation` — it goes in `domain`. The `<FeatureUpper>Page.kt` under `presentation` is the Composable.
-- (Nested route) Don't splice a path-param value into `PATH` — `PATH` stays the `{param}` **template**; the value goes in `args`. And don't let `{paramName}`, `KEY_*`, and the `Args.from` key drift apart (silent value loss). See `navigation-conventions` rules 2–3.
+- (Nested route) Don't splice a path-param value into `PATH` — `PATH` stays the `{param}` **template**; the value goes in `args`. And don't let `{paramName}`, `KEY_*`, and the `Args.from` key drift apart (silent value loss). See `navigation-conventions` Golden rules 2–3 in `.agents/skills/navigation-conventions/SKILL.md`.
 - (Nested route) Don't redefine a route's cold back stack anywhere but its `syntheticStack`; don't reach for a Nav3 built-in deep-link parser (there is none — it's `RoutePattern` + the registry).
 - Don't proceed with empty `<NewFeature>` input.
 - Don't fill `placeholder` with guessed domain fields — it's a placeholder for `api-dto-code-gen` to replace later.
 - Don't model ViewModel state as a single primitive `MutableStateFlow<String>` — convention is `data class <Feature>UIState`.
-- Don't mutate state with `uiState.update {}` in a stateful screen — every change goes through `dispatch(<Feature>ReducerEvent) → reduce()` (CLAUDE.md rule 3). The plain-`ViewModel` form is for the intro-style minimal screen only.
+- Don't mutate state with `uiState.update {}` in a stateful screen — every change goes through `dispatch(<Feature>ReducerEvent) → reduce()` (AGENTS.md rule 3). The plain-`ViewModel` form is for the intro-style minimal screen only.
 
 Data-layer conventions (DTO `@Keep` vs `@Serializable`, no `Json` / `Retrofit` / `OkHttp` redefinition, ErrorType placement, DTO→VO mapping, etc.) — `api-dto-code-gen` §13 don't list is canonical; follow it when filling in the scaffolded placeholders.

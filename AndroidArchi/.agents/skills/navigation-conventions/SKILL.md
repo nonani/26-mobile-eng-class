@@ -33,7 +33,7 @@ A screen's identity is its **`path`**. The same path drives in-app navigation, t
 3. **Template param name == Args key == `Args.from` lookup key**, char-for-char. `{articleId}` ↔ `KEY_ARTICLE_ID = "articleId"` ↔ `args["articleId"]`. Mismatch silently drops the value.
 4. **Cold-start back stack is defined ONLY in `AppRoute.syntheticStack`** (single source of truth). The warm/deep-link path does not redefine per-route stacks.
 5. **No duplicate keys in the back stack.** Navigation3's `contentKey` defaults to `key.toString()`, which must be unique per back-stack entry. Use the `bringToFront` helper (`removeAll { it == key }; add(key)`) when re-surfacing an existing key — never a bare `add` that can duplicate, and never `remove` (removes only the first occurrence).
-6. **In-app navigation goes through `navigationHelper.navigateTo(Page)`** (CLAUDE.md rule 7). Construct the `Page`/`Args` and call `navigateTo`; don't poke the back stack from a screen.
+6. **In-app navigation goes through `navigationHelper.navigateTo(Page)`** (AGENTS.md rule 7). Construct the `Page`/`Args` and call `navigateTo`; don't poke the back stack from a screen.
 7. **`args` are String-only.** Complex types serialize to a JSON string (`NavRouteJson`) — see `FullScreenMediaPage` for the typed-Args golden example.
 
 ## In-app navigation vs deep links — two separate signals

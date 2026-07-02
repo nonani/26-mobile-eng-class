@@ -1,6 +1,6 @@
 ---
 name: "verify-screen"
-description: "Visually verify an implemented screen against its design spec \u2014 boot/use an emulator, deep-link into the screen, screenshot it, and compare with the Figma frame or design-spec image, reporting spacing/color/typography diffs. Trigger when the user asks to \"verify the screen\", \"compare with the design\", \"check it looks right\", or runs `/verify-screen`, typically after design-to-feature."
+description: "Visually verify an implemented screen against its design spec \u2014 boot/use an emulator, deep-link into the screen, screenshot it, and compare with the Figma frame or design-spec image, reporting spacing/color/typography diffs. Trigger when the user asks to \"verify the screen\", \"compare with the design\", \"check it looks right\", or invokes the `verify-screen` skill, typically after design-to-feature."
 ---
 
 # Screen visual verification (emulator vs design)

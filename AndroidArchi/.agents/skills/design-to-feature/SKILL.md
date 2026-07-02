@@ -1,6 +1,6 @@
 ---
 name: "design-to-feature"
-description: "Build a complete feature (4-module set + Compose UI + route registration) from a design spec \u2014 a Figma frame link (via Figma MCP) OR a design-spec image/PDF. Orchestrates make-new-feature-module, api-dto-code-gen, compose-component and gradle-build-check end-to-end. Trigger when the user provides a Figma link / design image / design PDF and asks to \"implement this screen\", \"build this design\", \"make this into a feature\", or runs `/design-to-feature`."
+description: "Build a complete feature (4-module set + Compose UI + route registration) from a design spec \u2014 a Figma frame link (via Figma MCP) OR a design-spec image/PDF. Orchestrates make-new-feature-module, api-dto-code-gen, compose-component and gradle-build-check end-to-end. Trigger when the user provides a Figma link / design image / design PDF and asks to \"implement this screen\", \"build this design\", \"make this into a feature\", or invokes the `design-to-feature` skill."
 ---
 
 # Design → feature pipeline (Figma / image / PDF)

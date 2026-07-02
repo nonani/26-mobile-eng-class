@@ -1,6 +1,6 @@
 ---
 name: "make-new-feature-module-ko"
-description: "Korean-language variant of `make-new-feature-module`. Scaffold a brand-new feature as a 4-module set (entity / domain / data / presentation) mirroring the existing :intro / :search modules \u2014 gradle files, packages, AndroidManifest, base classes (VO, ErrorType in domain, Repository, UseCase, Page navigation object, DataSource, ApiService, RepositoryImpl, DataModule, DTO, MVI Intent + UIState, ViewModel, Page composable), the settings.gradle.kts include block, the :app dependency block, and an AppRouteRegistry entry. Use ONLY when the user explicitly asks for Korean output or invokes `/make-new-feature-module-ko`. Default for this task is the English `make-new-feature-module` skill (lower token cost)."
+description: "Korean-language variant of `make-new-feature-module`. Scaffold a brand-new feature as a 4-module set (entity / domain / data / presentation) mirroring the existing :intro / :search modules \u2014 gradle files, packages, AndroidManifest, base classes (VO, ErrorType in domain, Repository, UseCase, Page navigation object, DataSource, ApiService, RepositoryImpl, DataModule, DTO, MVI Intent + UIState, ViewModel, Page composable), the settings.gradle.kts include block, the :app dependency block, and an AppRouteRegistry entry. Use ONLY when the user explicitly asks for Korean output or asks to run `make-new-feature-module-ko`; use this skill for that request. Default for this task is the English `make-new-feature-module` skill (lower token cost)."
 ---
 
 # 새 Feature 모듈 스캐폴딩 (intro / search 모듈 기준)
@@ -80,7 +80,7 @@ description: "Korean-language variant of `make-new-feature-module`. Scaffold a b
             └── <FeatureUpper>Page.kt          # 안에 data class <FeatureUpper>UIState 정의
 ```
 
-> stateful 화면(search / favorite / fullScreenMedia)은 MVI: 상태 변이는 `dispatch(ReducerEvent) → reduce()` 를 거치며, 절대 `uiState.update {}` 를 직접 호출하지 않는다(CLAUDE.md 규칙 3). 이들은 `<FeatureUpper>ReducerEvent.kt` 를 함께 둔다. `intro` 는 최소 non-MVI 예외(plain `ViewModel`, 빈 Composable stub) — 이 가장 단순한 화면 케이스에서만 ReducerEvent 파일을 생략한다.
+> stateful 화면(search / favorite / fullScreenMedia)은 MVI: 상태 변이는 `dispatch(ReducerEvent) → reduce()` 를 거치며, 절대 `uiState.update {}` 를 직접 호출하지 않는다(AGENTS.md 규칙 3). 이들은 `<FeatureUpper>ReducerEvent.kt` 를 함께 둔다. `intro` 는 최소 non-MVI 예외(plain `ViewModel`, 빈 Composable stub) — 이 가장 단순한 화면 케이스에서만 ReducerEvent 파일을 생략한다.
 
 > AndroidManifest 는 빈 `<manifest>` 태그만 있는 placeholder. data/presentation 에만 둠 (entity/domain 은 kotlin-jvm 모듈이라 manifest 불필요).
 
@@ -401,7 +401,7 @@ object <FeatureUpper>Page {
 }
 ```
 
-> **3중 이름 일치(조용한 실패 함정):** 템플릿 구간 `{<paramName>}`, 상수 `KEY_<PARAM_UPPER> = "<paramName>"`, `Args.from` 조회 키가 모두 같은 문자열이어야 한다. 어긋나면 딥링크 값이 **오류 없이 유실**된다. `navigation-conventions` 규칙 2–3 참고.
+> **3중 이름 일치(조용한 실패 함정):** 템플릿 구간 `{<paramName>}`, 상수 `KEY_<PARAM_UPPER> = "<paramName>"`, `Args.from` 조회 키가 모두 같은 문자열이어야 한다. 어긋나면 딥링크 값이 **오류 없이 유실**된다. `.agents/skills/navigation-conventions/SKILL.md`의 `navigation-conventions` Golden rules 2–3 참고.
 >
 > `PATH` 가 `{<paramName>}` 를 그대로 담는 이유: 그 템플릿 문자열이 백스택 키 식별자(`GenericNavKey.path`), O(1) 렌더 dispatch 키(`appRouteByPath[path]`), 딥링크 URL 템플릿 — 셋 모두 하나의 값이다. 콘크리트 `123` 은 `args` 에만 들어가므로 직렬화/프로세스 사망 복원이 안전하고 `RoutePattern` 이 값을 추출할 수 있다. `PATH` 에 `{` 가 들어간 라우트는 `appRoutePatterns` 에 자동 등록되어 딥링크가 공짜로 매칭된다.
 
@@ -652,7 +652,7 @@ private fun <FeatureUpper>PageContent(uiState: <FeatureUpper>UIState) {
 
 ### 2.18 `presentation/.../<FeatureUpper>ViewModel.kt`
 
-stateful (MVI) — `MviViewModel` 를 상속하고, 모든 상태 변이를 `dispatch(ReducerEvent) → reduce()` 로만 흘린다(CLAUDE.md 규칙 3; `search` / `favorite` / `fullScreenMedia` 패턴). `uiState.update {}` 를 직접 호출하지 않는다.
+stateful (MVI) — `MviViewModel` 를 상속하고, 모든 상태 변이를 `dispatch(ReducerEvent) → reduce()` 로만 흘린다(AGENTS.md 규칙 3; `search` / `favorite` / `fullScreenMedia` 패턴). `uiState.update {}` 를 직접 호출하지 않는다.
 
 ```kotlin
 package com.jongchan.androidarchi.<featureLower>.presentation
@@ -870,11 +870,11 @@ AppRoute(
 
 - 기존 모듈(`intro`, `search`, `favorite`, `fullScreenMedia`, `main`, `common`)의 파일은 절대 수정하지 않는다 — `settings.gradle.kts` / `app/build.gradle.kts` / `main/presentation/build.gradle.kts` / `AppRouteRegistry.kt` 의 **추가** 만 허용.
 - `<FeatureUpper>Page` (Navigation 정의) 를 `presentation` 에 두지 않는다 — `domain` 에. presentation 의 `<FeatureUpper>Page.kt` 는 Composable.
-- (중첩 라우트) path 파라미터 값을 `PATH` 에 끼우지 않는다 — `PATH` 는 `{param}` **템플릿** 그대로, 값은 `args` 로. 그리고 `{paramName}` · `KEY_*` · `Args.from` 키가 어긋나지 않게 한다(값이 조용히 유실됨). `navigation-conventions` 규칙 2–3 참고.
+- (중첩 라우트) path 파라미터 값을 `PATH` 에 끼우지 않는다 — `PATH` 는 `{param}` **템플릿** 그대로, 값은 `args` 로. 그리고 `{paramName}` · `KEY_*` · `Args.from` 키가 어긋나지 않게 한다(값이 조용히 유실됨). `.agents/skills/navigation-conventions/SKILL.md`의 `navigation-conventions` Golden rules 2–3 참고.
 - (중첩 라우트) 콜드 백스택을 `syntheticStack` 외의 곳에서 재정의하지 않는다. Nav3 내장 딥링크 파서를 찾지 않는다 — 그런 건 없고 `RoutePattern` + 레지스트리가 처리한다.
 - 빈 `<NewFeature>` 입력으로 진행하지 않는다.
 - `placeholder` 필드가 의미 없어 보여도 임의 도메인 필드를 추측해서 채우지 않는다 — 후속 `api-dto-code-gen-ko` 단계에서 교체될 placeholder.
 - ViewModel 의 상태를 `MutableStateFlow<String>` 같은 단일 primitive 로 두지 않는다 — `data class <Feature>UIState` 형태가 컨벤션.
-- stateful 화면에서 `uiState.update {}` 로 상태를 직접 변이하지 않는다 — 모든 변이는 `dispatch(<Feature>ReducerEvent) → reduce()` 를 거친다(CLAUDE.md 규칙 3). plain `ViewModel` 형태는 intro 같은 최소 화면에만.
+- stateful 화면에서 `uiState.update {}` 로 상태를 직접 변이하지 않는다 — 모든 변이는 `dispatch(<Feature>ReducerEvent) → reduce()` 를 거친다(AGENTS.md 규칙 3). plain `ViewModel` 형태는 intro 같은 최소 화면에만.
 
 데이터 레이어 컨벤션 (DTO `@Keep` 금지, `Json` / `Retrofit` / `OkHttp` 재정의 금지, `ErrorType` 위치, DTO→VO 매핑 등) 은 `api-dto-code-gen-ko` §13 의 don't 리스트가 canonical — 스캐폴딩으로 만든 placeholder 를 채울 때 따른다.
