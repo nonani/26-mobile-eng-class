@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "d=\"$PWD\"; while [ \"$d\" != \"/\" ] && [ ! -x \"$d/.codex/hooks/kt-dirty.sh\" ]; do d=$(dirname \"$d\"); done; \"$d/.codex/hooks/kt-dirty.sh\"",
+            "statusMessage": "Marking Kotlin build check as dirty"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "d=\"$PWD\"; while [ \"$d\" != \"/\" ] && [ ! -x \"$d/.codex/hooks/build-clear.sh\" ]; do d=$(dirname \"$d\"); done; \"$d/.codex/hooks/build-clear.sh\"",
+            "statusMessage": "Checking Gradle verification marker"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "d=\"$PWD\"; while [ \"$d\" != \"/\" ] && [ ! -x \"$d/.codex/hooks/stop-check.sh\" ]; do d=$(dirname \"$d\"); done; \"$d/.codex/hooks/stop-check.sh\"",
+            "timeout": 30,
+            "statusMessage": "Checking Android build verification"
+          }
+        ]
+      }
+    ]
+  }
+}
