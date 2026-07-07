@@ -1,7 +1,7 @@
 # AndroidArchi
 
 멀티모듈 클린아키텍처 기반의 **Android 템플릿 프로젝트**입니다.
-새 프로젝트를 시작할 때 이 프로젝트의 아키텍처(4-레이어 모듈, MVI, Hilt, Navigation3, 디자인 토큰 시스템, TTI/Jank 계측)를 그대로 복제해 사용하고, `.claude/skills/` 의 Agent Skill 들로 Figma 디자인 스펙 기반의 화면/기능을 빠르게 생성하는 것이 목적입니다.
+새 프로젝트를 시작할 때 이 프로젝트의 아키텍처(4-레이어 모듈, MVI, Hilt, Navigation3, 디자인 토큰 시스템, TTI/Jank 계측)를 그대로 복제해 사용하고, 저장소에 포함된 Agent Skill 들로 Figma 디자인 스펙 기반의 화면/기능을 빠르게 생성하는 것이 목적입니다.
 
 포함된 4개 feature 는 각각 **서로 다른 아키텍처 패턴의 골든 예제(패턴 카탈로그)** 입니다. 새 기능을 만들 때는 아래 표에서 가장 비슷한 패턴을 베이스로 삼으세요.
 
@@ -12,7 +12,7 @@
 | `favorite` | 로컬 저장소(SharedPreferences KV + Flow observe), synthetic backstack, bottom tab |
 | `fullScreenMedia` | ViewBinding Fragment 혼합 호스팅, 딥링크 typed Args |
 
-> **🎨 Figma/디자인 스펙으로 화면 만들기:** [docs/DESIGN_TO_CODE_GUIDE.md](docs/DESIGN_TO_CODE_GUIDE.md) — Figma MCP 연결, `/design-token-sync`, `/design-to-feature` 사용법.
+> **🎨 Figma/디자인 스펙으로 화면 만들기:** [docs/DESIGN_TO_CODE_GUIDE.md](docs/DESIGN_TO_CODE_GUIDE.md) — Figma MCP 연결, `design-token-sync`, `design-to-feature` 스킬 사용법.
 
 ---
 
@@ -176,25 +176,26 @@ App Link 가 설정되어 있어 `adb shell am start` 로 임의 화면에 직�
 
 ## 진행 과정에서 활용한 생산성 향상 Agent Skill
 
-`.claude/skills/` 에 프로젝트 컨벤션이 세팅된 스킬을 두어, AI 코드 생성을 본 코드베이스 스타일에 맞게 진행하여 AI Agent 활용성을 높이고 엔지니어의 생산성을 높일수 있게 하였습니다.
+Claude Code 사용자는 `.claude/skills/`, Codex 사용자는 `.agents/skills/` 의 같은 이름 스킬을 사용합니다.
+각 스킬에는 프로젝트 컨벤션이 세팅되어 있어, AI 코드 생성을 본 코드베이스 스타일에 맞게 진행하고 엔지니어의 생산성을 높일수 있게 하였습니다.
 실제 레퍼런스 feature 들의 UI구현 / API 세팅 / 기본 아키텍처 스캐폴딩은 모두 아래의 스킬을 활용했습니다.
 
-| 스킬 | 역할                                                                                                                |
-|---|-------------------------------------------------------------------------------------------------------------------|
-| [`design-to-feature`](.claude/skills/design-to-feature/SKILL.md) | **디자인 스펙(Figma 링크 / 이미지 / PDF) → feature 생성 파이프라인.** 화면 인벤토리 → 골든 예제 선택 → 스캐폴딩 → 토큰 기반 Compose UI → 데이터 레이어 → 라우트 등록 → 빌드 검증을 오케스트레이션 |
-| [`design-token-sync`](.claude/skills/design-token-sync/SKILL.md) | Figma Variables/Text Styles(또는 디자인 이미지) → `DesignTokens.kt` 의 FIGMA-TOKEN-INJECTION-POINT 구간 갱신 + 매핑 리포트 |
-| [`make-new-feature-module`](.claude/skills/make-new-feature-module/SKILL.md) | 새 피처 추가 시 `:intro` 모듈을 템플릿으로 4-모듈 세트(entity/domain/data/presentation) 와 `settings.gradle.kts` 등록 라인까지 한 번에 스캐폴딩, 단일 화면(Screen + Stateless Content + ViewModel + UiState + Intent + TestTags + Preview) MVVM 스캐폴딩 |
-| [`navigation-conventions`](.claude/skills/navigation-conventions/SKILL.md) | 네비게이션/라우트/딥링크 규칙 — NavRoute/Page object, AppRouteRegistry, synthetic backstack, 딥링크 cold/warm 정책, RoutePattern 템플릿, NavigationHelper. 화면·경로·딥링크 추가/수정 시 |
-| [`api-dto-code-gen`](.claude/skills/api-dto-code-gen/SKILL.md) | 예시 JSON 응답 → DTO(all-nullable) + VO(default) + `toVO()` + Retrofit 메서드 + DataSource + Repository 자동 생성            |
-| [`compose-component`](.claude/skills/compose-component/SKILL.md) | Composable 1개 추가 시 패키지 / 테마 래핑 / `@Preview` / stateless-stateful 분리 컨벤션 적용                                        |
-| [`new-project-from-archi`](.claude/skills/new-project-from-archi/SKILL.md) | 이 템플릿을 새 프로젝트로 복제 — 이름/패키지/딥링크 호스트 치환, 레퍼런스 feature 선택 제거, 빌드/잔여 문자열 검증 |
-| [`verify-screen`](.claude/skills/verify-screen/SKILL.md) | 에뮬레이터 딥링크 진입 → 스크린샷 → 디자인 스펙과 시각 비교 리포트 |
-| [`run-android-tests`](.claude/skills/run-android-tests/SKILL.md) | 단위 / 인스트루먼트 테스트 실행 가이드                                                                                            |
-| [`gradle-build-check`](.claude/skills/gradle-build-check/SKILL.md) | 코드 변경 후 "끝났다" 보고 직전 빌드 + 린트 검증 의무화                                                                                |
+| 스킬 이름 | Claude Code | Codex | 역할 |
+|---|---|---|---|
+| `design-to-feature` | [SKILL.md](.claude/skills/design-to-feature/SKILL.md) | [SKILL.md](.agents/skills/design-to-feature/SKILL.md) | **디자인 스펙(Figma 링크 / 이미지 / PDF) → feature 생성 파이프라인.** 화면 인벤토리 → 골든 예제 선택 → 스캐폴딩 → 토큰 기반 Compose UI → 데이터 레이어 → 라우트 등록 → 빌드 검증을 오케스트레이션 |
+| `design-token-sync` | [SKILL.md](.claude/skills/design-token-sync/SKILL.md) | [SKILL.md](.agents/skills/design-token-sync/SKILL.md) | Figma Variables/Text Styles(또는 디자인 이미지) → `DesignTokens.kt` 의 FIGMA-TOKEN-INJECTION-POINT 구간 갱신 + 매핑 리포트 |
+| `make-new-feature-module` | [SKILL.md](.claude/skills/make-new-feature-module/SKILL.md) | [SKILL.md](.agents/skills/make-new-feature-module/SKILL.md) | 새 피처 추가 시 `:intro` 모듈을 템플릿으로 4-모듈 세트(entity/domain/data/presentation) 와 `settings.gradle.kts` 등록 라인까지 한 번에 스캐폴딩, 단일 화면(Screen + Stateless Content + ViewModel + UiState + Intent + TestTags + Preview) MVVM 스캐폴딩 |
+| `navigation-conventions` | [SKILL.md](.claude/skills/navigation-conventions/SKILL.md) | [SKILL.md](.agents/skills/navigation-conventions/SKILL.md) | 네비게이션/라우트/딥링크 규칙 — NavRoute/Page object, AppRouteRegistry, synthetic backstack, 딥링크 cold/warm 정책, RoutePattern 템플릿, NavigationHelper. 화면·경로·딥링크 추가/수정 시 |
+| `api-dto-code-gen` | [SKILL.md](.claude/skills/api-dto-code-gen/SKILL.md) | [SKILL.md](.agents/skills/api-dto-code-gen/SKILL.md) | 예시 JSON 응답 → DTO(all-nullable) + VO(default) + `toVO()` + Retrofit 메서드 + DataSource + Repository 자동 생성 |
+| `compose-component` | [SKILL.md](.claude/skills/compose-component/SKILL.md) | [SKILL.md](.agents/skills/compose-component/SKILL.md) | Composable 1개 추가 시 패키지 / 테마 래핑 / `@Preview` / stateless-stateful 분리 컨벤션 적용 |
+| `new-project-from-archi` | [SKILL.md](.claude/skills/new-project-from-archi/SKILL.md) | [SKILL.md](.agents/skills/new-project-from-archi/SKILL.md) | 이 템플릿을 새 프로젝트로 복제 — 이름/패키지/딥링크 호스트 치환, 레퍼런스 feature 선택 제거, 빌드/잔여 문자열 검증 |
+| `verify-screen` | [SKILL.md](.claude/skills/verify-screen/SKILL.md) | [SKILL.md](.agents/skills/verify-screen/SKILL.md) | 에뮬레이터 딥링크 진입 → 스크린샷 → 디자인 스펙과 시각 비교 리포트 |
+| `run-android-tests` | [SKILL.md](.claude/skills/run-android-tests/SKILL.md) | [SKILL.md](.agents/skills/run-android-tests/SKILL.md) | 단위 / 인스트루먼트 테스트 실행 가이드 |
+| `gradle-build-check` | [SKILL.md](.claude/skills/gradle-build-check/SKILL.md) | [SKILL.md](.agents/skills/gradle-build-check/SKILL.md) | 코드 변경 후 "끝났다" 보고 직전 빌드 + 린트 검증 의무화 |
 
 스킬은 모두 본 프로젝트의 패키지 / 컨벤션 / 모듈 구조를 알고 있으므로, 같은 작업을 반복해도 동일한 형태의 코드가 나오도록 보장합니다.
 
-> 한국어 출력 변형으로 `make-new-feature-module-ko`, `api-dto-code-gen-ko` 가 디스크에 함께 있습니다. 한국어 출력이 필요할 때 명시적으로 호출하세요 (기본은 위 영어 스킬).
+> 한국어 출력 변형으로 `make-new-feature-module-ko`, `api-dto-code-gen-ko` 가 도구별 스킬 디렉터리에 함께 있습니다. 한국어 출력이 필요할 때 명시적으로 호출하세요 (기본은 위 영어 스킬).
 
 ---
 
