@@ -1,10 +1,11 @@
 package com.jongchan.androidarchi.search.presentation
 
+import com.jongchan.androidarchi.common.domain.sdui.SDUIViewTypeVO
 import com.jongchan.androidarchi.common.entity.media.MediaItemVO
 import com.jongchan.androidarchi.common.entity.media.MediaSearchResultVO
+import com.jongchan.androidarchi.common.presentation.mvi.UiState
 import com.jongchan.androidarchi.common.presentation.searchList.MediaItemUiState
 import com.jongchan.androidarchi.common.presentation.searchList.formatKakaoDateTime
-import com.jongchan.androidarchi.common.presentation.mvi.UiState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
@@ -13,6 +14,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 
 data class SearchUIState(
+    val sduiViewItems: List<SDUIViewTypeVO>?,
     val query: String,
     val isLoading: Boolean,
     val isLoadingMore: Boolean,
@@ -23,6 +25,10 @@ data class SearchUIState(
     val favoriteUrls: ImmutableSet<String>,
     val rawMediaItems: ImmutableList<MediaItemVO>,
 ) : UiState {
+
+    fun setSDUIViews(sduiViewItems: List<SDUIViewTypeVO>?): SearchUIState = copy(
+        sduiViewItems = sduiViewItems,
+    )
 
     fun rawItemByUrl(url: String): MediaItemVO? = rawMediaItems.firstOrNull { it.urlKey == url }
 
@@ -55,6 +61,7 @@ data class SearchUIState(
         const val FIRST_PAGE = 1
 
         val empty = SearchUIState(
+            sduiViewItems = emptyList(),
             query = "",
             isLoading = false,
             isLoadingMore = false,
@@ -67,10 +74,12 @@ data class SearchUIState(
         )
 
         fun fromSearchResult(
+            sduiViewItems: List<SDUIViewTypeVO>?,
             query: String,
             result: MediaSearchResultVO,
             favoriteUrls: ImmutableSet<String>,
         ): SearchUIState = SearchUIState(
+            sduiViewItems = sduiViewItems,
             query = query,
             isLoading = false,
             isLoadingMore = false,

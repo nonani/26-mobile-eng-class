@@ -11,6 +11,7 @@ import com.jongchan.androidarchi.common.presentation.R
 import com.jongchan.androidarchi.common.presentation.mvi.MviViewModel
 import com.jongchan.androidarchi.fullScreenMedia.domain.FullScreenMediaOrigin
 import com.jongchan.androidarchi.fullScreenMedia.domain.FullScreenMediaPage
+import com.jongchan.androidarchi.search.domain.SearchPageUseCase
 import com.jongchan.androidarchi.search.domain.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -23,6 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    private val searchPageUseCase: SearchPageUseCase,
     private val searchUseCase: SearchUseCase,
     private val getFavoriteItemsUseCase: GetFavoriteItemsUseCase,
     private val registerFavoriteItemUseCase: RegisterFavoriteItemUseCase,
@@ -51,18 +53,16 @@ class SearchViewModel @Inject constructor(
 
     override fun reduce(state: SearchUIState, event: SearchReducerEvent): SearchUIState =
         when (event) {
+            is SearchReducerEvent.PageInitLoaded -> state.setSDUIViews(event.result.sduiComponents)
             is SearchReducerEvent.QueryChanged -> state.copy(query = event.query)
-            SearchReducerEvent.Cleared -> SearchUIState.empty.copy(favoriteUrls = state.favoriteUrls)
-            SearchReducerEvent.SearchStarted -> state.copy(isLoading = true, hasSearched = true)
-            SearchReducerEvent.SearchFailed -> state.copy(isLoading = false)
-            is SearchReducerEvent.SearchResultLoaded ->
-                SearchUIState.fromSearchResult(state.query, event.result, state.favoriteUrls)
-
-            SearchReducerEvent.LoadMoreStarted -> state.copy(isLoadingMore = true)
+            is SearchReducerEvent.Cleared -> SearchUIState.empty.copy(favoriteUrls = state.favoriteUrls)
+            is SearchReducerEvent.SearchStarted -> state.copy(isLoading = true, hasSearched = true)
+            is SearchReducerEvent.SearchFailed -> state.copy(isLoading = false)
+            is SearchReducerEvent.SearchResultLoaded -> SearchUIState.fromSearchResult(state.sduiViewItems, state.query, event.result, state.favoriteUrls)
+            is SearchReducerEvent.LoadMoreStarted -> state.copy(isLoadingMore = true)
             is SearchReducerEvent.MorePageLoaded -> state.appendPage(event.result, event.page)
-            SearchReducerEvent.LoadMoreFailed -> state.copy(isLoadingMore = false)
-            is SearchReducerEvent.FavoritesChanged ->
-                state.withFavorites(event.urls.asImmutable())
+            is SearchReducerEvent.LoadMoreFailed -> state.copy(isLoadingMore = false)
+            is SearchReducerEvent.FavoritesChanged -> state.withFavorites(event.urls.asImmutable())
         }
 
     private fun observeFavorites() {
@@ -169,5 +169,20 @@ class SearchViewModel @Inject constructor(
                 type = target.type,
             )
         )
+    }
+
+    init {
+        viewModelScope.launch {
+            runCatching { searchPageUseCase() }
+                .onSuccess { result ->
+                    dispatch(
+                        SearchReducerEvent.PageInitLoaded(result)
+                    )
+                }
+                .onFailure {
+                    dispatch(SearchReducerEvent.LoadMoreFailed)
+                    messageHelper.showSnackBar(messageRes = R.string.search_failed)
+                }
+        }
     }
 }

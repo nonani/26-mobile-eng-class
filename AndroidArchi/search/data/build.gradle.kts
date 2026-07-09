@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
 }
@@ -44,6 +45,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     // Network
     implementation(libs.retrofit)
+    implementation(libs.kotlinx.serialization.json)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
