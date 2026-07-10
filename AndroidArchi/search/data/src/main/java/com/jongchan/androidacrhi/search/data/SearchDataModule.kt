@@ -1,6 +1,7 @@
 package com.jongchan.androidacrhi.search.data
 
 import com.jongchan.androidarchi.search.domain.SearchPageRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,26 +12,25 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SearchDataModule {
+abstract class SearchDataModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideSearchPageRepository(
-        searchPageDataSource: SearchPageDataSource,
-        json: Json,
-    ): SearchPageRepository =
-        SearchPageRepositoryImpl(searchPageDataSource, json)
+    abstract fun bindSearchPageRepository(impl: SearchPageRepositoryImpl): SearchPageRepository
 
-    @Provides
-    @Singleton
-    fun provideSearchPageDataSource(
-        apiService: SearchPageApiService,
-        json: Json,
-    ): SearchPageDataSource =
-        SearchPageDataSource(apiService, json)
+    companion object {
 
-    @Provides
-    @Singleton
-    fun provideSearchPageApiService(retrofit: Retrofit): SearchPageApiService =
-        retrofit.create(SearchPageApiService::class.java)
+        @Provides
+        @Singleton
+        fun provideSearchPageDataSource(
+            apiService: SearchPageApiService,
+            json: Json,
+        ): SearchPageDataSource =
+            SearchPageDataSource(apiService, json)
+
+        @Provides
+        @Singleton
+        fun provideSearchPageApiService(retrofit: Retrofit): SearchPageApiService =
+            retrofit.create(SearchPageApiService::class.java)
+    }
 }

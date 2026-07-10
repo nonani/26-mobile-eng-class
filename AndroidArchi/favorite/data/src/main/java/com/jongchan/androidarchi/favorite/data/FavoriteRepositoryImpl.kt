@@ -1,5 +1,6 @@
 package com.jongchan.androidarchi.favorite.data
 
+import com.jongchan.androidarchi.common.domain.coroutine.IoScope
 import com.jongchan.androidarchi.common.domain.favorite.FavoriteRepository
 import com.jongchan.androidarchi.common.entity.favorite.FavoriteItemVO
 import com.jongchan.androidarchi.favorite.data.local.toDto
@@ -9,10 +10,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
+import javax.inject.Inject
 
-class FavoriteRepositoryImpl(
+class FavoriteRepositoryImpl @Inject constructor(
     private val dataSource: FavoriteDataSource,
-    private val sharingScope: CoroutineScope,
+    @IoScope private val sharingScope: CoroutineScope,
 ) : FavoriteRepository {
     private val sharedItems: Flow<List<FavoriteItemVO>> =
         dataSource.getFavoriteMediaItemsFlow()

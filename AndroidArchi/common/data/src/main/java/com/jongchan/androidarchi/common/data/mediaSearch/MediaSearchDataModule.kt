@@ -1,6 +1,7 @@
 package com.jongchan.androidarchi.common.data.mediaSearch
 
 import com.jongchan.androidarchi.common.domain.media.MediaSearchRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,20 +11,22 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MediaSearchDataModule {
+abstract class MediaSearchDataModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideMediaRepository(searchDataSource: MediaSearchDataSource): MediaSearchRepository =
-        MediaSearchRepositoryImpl(searchDataSource)
+    abstract fun bindMediaRepository(impl: MediaSearchRepositoryImpl): MediaSearchRepository
 
-    @Provides
-    @Singleton
-    fun provideKakaoSearchDataSource(apiService: MediaSearchApiService): MediaSearchDataSource =
-        MediaSearchDataSource(apiService)
+    companion object {
 
-    @Provides
-    @Singleton
-    fun provideKakaoSearchApiService(retrofit: Retrofit): MediaSearchApiService =
-        retrofit.create(MediaSearchApiService::class.java)
+        @Provides
+        @Singleton
+        fun provideKakaoSearchDataSource(apiService: MediaSearchApiService): MediaSearchDataSource =
+            MediaSearchDataSource(apiService)
+
+        @Provides
+        @Singleton
+        fun provideKakaoSearchApiService(retrofit: Retrofit): MediaSearchApiService =
+            retrofit.create(MediaSearchApiService::class.java)
+    }
 }

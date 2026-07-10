@@ -5,8 +5,9 @@ import com.jongchan.androidarchi.common.domain.media.MediaSearchRepository
 import com.jongchan.androidarchi.common.entity.media.MediaSearchResultVO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import javax.inject.Inject
 
-class MediaSearchRepositoryImpl(
+class MediaSearchRepositoryImpl @Inject constructor(
     private val searchDataSource: MediaSearchDataSource,
 ) : MediaSearchRepository {
 
