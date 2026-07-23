@@ -1,6 +1,7 @@
 package com.jongchan.androidarchi.intro.data
 
 import com.jongchan.androidarchi.intro.domain.IntroRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,20 +11,22 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object IntroDataModule {
+abstract class IntroDataModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideIntroRepository(dataSource: IntroDataSource): IntroRepository =
-        IntroRepositoryImpl(dataSource)
+    abstract fun bindIntroRepository(impl: IntroRepositoryImpl): IntroRepository
 
-    @Provides
-    @Singleton
-    fun provideIntroDataSource(apiService: IntroApiService): IntroDataSource =
-        IntroDataSource(apiService)
+    companion object {
 
-    @Provides
-    @Singleton
-    fun provideIntroApiService(retrofit: Retrofit): IntroApiService =
-        retrofit.create(IntroApiService::class.java)
+        @Provides
+        @Singleton
+        fun provideIntroDataSource(apiService: IntroApiService): IntroDataSource =
+            IntroDataSource(apiService)
+
+        @Provides
+        @Singleton
+        fun provideIntroApiService(retrofit: Retrofit): IntroApiService =
+            retrofit.create(IntroApiService::class.java)
+    }
 }

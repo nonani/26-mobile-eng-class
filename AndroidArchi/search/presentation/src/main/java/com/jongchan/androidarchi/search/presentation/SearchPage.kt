@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jongchan.androidarchi.common.presentation.R
 import com.jongchan.androidarchi.common.presentation.component.ArchiText
+import com.jongchan.androidarchi.common.presentation.sdui.SDUIRootView
 import com.jongchan.androidarchi.common.presentation.searchList.ContentsList
 import com.jongchan.androidarchi.common.presentation.searchList.MediaSearchBar
 import com.jongchan.androidarchi.common.presentation.ui.theme.DesignSystemThemeImpl
@@ -48,6 +50,15 @@ private fun SearchPageContent(
             onClear = { onIntent(SearchIntent.Clear) },
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
         )
+
+        if (uiState.sduiViewItems.isNullOrEmpty().not()) {
+            SDUIRootView(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                items = uiState.sduiViewItems,
+            )
+        }
 
         Box(modifier = Modifier.fillMaxSize()) {
             when {
