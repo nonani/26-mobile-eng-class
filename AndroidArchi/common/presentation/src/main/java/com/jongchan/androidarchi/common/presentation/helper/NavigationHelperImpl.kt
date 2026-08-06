@@ -31,6 +31,10 @@ class NavigationHelperImpl : NavigationHelper {
         emit(NavSignal.Back)
     }
 
+    override fun navigateToSessionExpiredPage() {
+        emit(NavSignal.SessionExpired)
+    }
+
     private fun emit(navSignal: NavSignal) {
         val result = _navigationFlow.trySend(navSignal)
         if (result.isFailure) Log.w("NavigationHelper", "dropped: $navSignal")
