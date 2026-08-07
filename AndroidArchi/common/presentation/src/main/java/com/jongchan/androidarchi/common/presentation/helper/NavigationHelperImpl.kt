@@ -3,7 +3,6 @@ package com.jongchan.androidarchi.common.presentation.helper
 import android.util.Log
 import androidx.compose.runtime.compositionLocalOf
 import com.jongchan.androidarchi.common.domain.helper.NavigationHelper
-import com.jongchan.androidarchi.common.domain.message.MessageEffect
 import com.jongchan.androidarchi.common.domain.navigation.NavRoute
 import com.jongchan.androidarchi.common.domain.navigation.NavSignal
 import com.jongchan.androidarchi.common.domain.navigation.Page
@@ -31,8 +30,8 @@ class NavigationHelperImpl : NavigationHelper {
         emit(NavSignal.Back)
     }
 
-    override fun navigateToSessionExpiredPage() {
-        emit(NavSignal.SessionExpired)
+    override fun navigateToInitial() {
+        emit(NavSignal.BackToInitialPage)
     }
 
     private fun emit(navSignal: NavSignal) {

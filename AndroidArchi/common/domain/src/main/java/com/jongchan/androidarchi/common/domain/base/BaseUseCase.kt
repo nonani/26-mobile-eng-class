@@ -24,8 +24,8 @@ open class BaseUseCase(
                         // 목적지(로그인 화면)를 직접 지정하지 않는다.
                         // ex) navigationHelper.navigateTo(IntroPage)
                         // common:domain 이 feature 의 Page를 참조하면 순환 의존이 되므로
-                        // "세션이 만료됐다"는 시그널만 날리고 실제 이동은 NavHost가 결정
-                        navigationHelper.navigateToSessionExpiredPage()
+                        // "초기 화면으로 이동"이라는 시그널만 날리고 실제 이동은 NavHost가 결정
+                        navigationHelper.navigateToInitial()
                     }
                 )
             }

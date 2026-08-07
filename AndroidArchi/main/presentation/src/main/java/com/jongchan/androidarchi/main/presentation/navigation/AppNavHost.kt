@@ -33,7 +33,7 @@ fun AppNavHost(
                 is NavSignal.GoToDestPage -> handleNavRoute(signal.route, backStack)
                 is NavSignal.DeepLink -> handleDeepLink(signal.route, backStack)
                 NavSignal.Back -> backStack.removeLastOrNull()
-                NavSignal.SessionExpired -> navigateToSessionExpiredStack(backStack)
+                NavSignal.BackToInitialPage -> navigateToInitialStack(backStack)
             }
         }
     }
@@ -136,10 +136,10 @@ private fun NavBackStack<NavKey>.bringToFront(key: NavKey) {
  * 스택을 비우고 Intro 단독으로 교체한다. 인증이 필요한 화면들이
  * 백스택에 남아 있으면 뒤로가기 했을 때 만료된 세션 상태로 다시 노출되기 때문이다.
  */
-private fun navigateToSessionExpiredStack(backStack: NavBackStack<NavKey>) {
+private fun navigateToInitialStack(backStack: NavBackStack<NavKey>) {
     backStack.clear()
     backStack.add(GenericNavKey(IntroPage.PATH))
-    Log.d(TAG, "sessionExpired: reset stack to Intro")
+    Log.d(TAG, "backToInitial: reset stack to Intro")
 }
 
 private fun navigateToSearchStack(backStack: NavBackStack<NavKey>) {
